@@ -497,6 +497,13 @@ void initConfig(struct config *conf)
 	conf->dns.hosts.d.json = cJSON_CreateArray();
 	conf->dns.hosts.c = validate_dns_hosts;
 
+	conf->dns.hostsLocal.k = "dns.hostsLocal";
+	conf->dns.hostsLocal.h = "If set, the names defined in dns.hosts are considered local and queries for them are never forwarded upstream.\n\n If unset, a query for a record type that has no local answer (e.g., AAAA when only an A address is defined) is forwarded and a public answer for the same name can shadow your local address. Note that this setting also covers subdomains of the configured names.";
+	conf->dns.hostsLocal.t = CONF_BOOL;
+	conf->dns.hostsLocal.f = FLAG_RESTART_FTL;
+	conf->dns.hostsLocal.d.b = true;
+	conf->dns.hostsLocal.c = validate_stub;
+
 	conf->dns.domainNeeded.k = "dns.domainNeeded";
 	conf->dns.domainNeeded.h = "If set, queries for plain names, without dots or domain parts, are never forwarded to upstream nameservers";
 	conf->dns.domainNeeded.t = CONF_BOOL;

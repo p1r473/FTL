@@ -701,6 +701,15 @@ setup() {
   assert_line --index 0 "80o,443os,[::]:80o,[::]:443os"
 }
 
+@test "Custom DNS records are treated as local (dns.hostsLocal)" {
+  # One local= per hostname configured in dns.hosts, so a type we have no
+  # local record for is not forwarded and answered upstream instead
+  run bash -c 'grep -c "^local=/abc-custom.com/$" /etc/pihole/dnsmasq.conf'
+  assert_line --index 0 "1"
+  run bash -c 'grep -c "^local=/def-custom.de/$" /etc/pihole/dnsmasq.conf'
+  assert_line --index 0 "1"
+}
+
 @test "'pihole-FTL backtrace' generates a structured backtrace" {
   run bash -c './pihole-FTL backtrace'
   printf "%s\n" "${lines[@]}"
