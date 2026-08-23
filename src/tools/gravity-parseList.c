@@ -98,6 +98,11 @@ inline bool __attribute__((pure)) valid_domain(const char *domain, const size_t 
 
 	// TLD checks
 
+	// The last label is not followed by a dot, so the loop above never
+	// checked its length
+	if(len - (size_t)(last_dot + 1) > 63)
+		return false;
+
 	// There must be at least two labels (i.e. one dot)
 	// e.g., "example.com" but not "localhost" for exact domain
 	// We do not enforce this for ABP domains and domainlist input
