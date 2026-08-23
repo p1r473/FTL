@@ -59,9 +59,11 @@ load 'bats_helper.bash'
   assert_success
   # One more than the deterministic baseline: the randomised DoT/DoH loopback
   # tuples change the encrypted-upstream config on every (re)start.
+  # BATS: 2x more from the dns.hosts sanitization tests, which change the
+  # records and, with dns.hostsLocal set, hence also the local= lines
   run bash -c 'grep -c "DEBUG_CONFIG: Config file written to /etc/pihole/dnsmasq.conf" /var/log/pihole/FTL.log'
   printf "dnsmasq.conf write count: %s\n" "${lines[0]}"
-  assert_line --index 0 "4"
+  assert_line --index 0 "6"
   run bash -c 'grep -c "DEBUG_CONFIG: HOSTS file written to /etc/pihole/hosts/custom.list" /var/log/pihole/FTL.log'
   printf "custom.list write count: %s\n" "${lines[0]}"
   # On RISCV64, pytest is skipped, so only BATS writes occur (3x)

@@ -2152,6 +2152,15 @@ void reread_config(void)
 			restart = true;
 		}
 
+		// The local= lines are derived from dns.hosts. They are
+		// written on startup, so changed records need a restart
+		if(conf_copy.dns.hostsLocal.v.b &&
+		   !compare_config_item(conf_copy.dns.hosts.t, &conf_copy.dns.hosts.v, &config.dns.hosts.v))
+		{
+			log_info("Custom DNS records changed, restarting FTL");
+			restart = true;
+		}
+
 		// Replace config struct used by FTL by newly loaded
 		// configuration. This swaps the pointers and frees
 		// the old config structure altogether
