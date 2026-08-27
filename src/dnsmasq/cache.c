@@ -2439,7 +2439,9 @@ static int error_occured(unsigned int flags) {
 /**** P-hole modified: Added file and line and serve log_query via macro defined in dnsmasq.h ****/
 void _log_query(unsigned int flags, char *name, union all_addr *addr, char *arg, unsigned short type, const char *file, const int line)
 {
-  char *source, *dest;
+  char *source;
+  const char *dest;
+  const char *ecs_client = (flags & F_QUERY) ? peekEDNSClient() : NULL;
   char *verb = "is";
   char *extra = "";
   char *gap = " ";
@@ -2606,6 +2608,9 @@ void _log_query(unsigned int flags, char *name, union all_addr *addr, char *arg,
 	source = querystr(source, type);
       
       verb = "from";
+
+      if (ecs_client)
+        dest = ecs_client;
     }
 
   if (!name)
